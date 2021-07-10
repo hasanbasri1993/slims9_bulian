@@ -560,62 +560,62 @@ if (isset($_POST['detail']) OR (isset($_GET['action']) AND $_GET['action'] == 'd
     $str_input  = '<div class="row">';
     $str_input .= '<div class="col-2">';
     $str_input .= '<div id="imageFilename" class="s-margin__bottom-1">';
-    if (isset($rec_d['member_image']) && file_exists(IMGBS.'/persons/'.$rec_d['member_image'])) {
-        $str_input .= '<a href="'.SWB.'images/persons/'.$rec_d['member_image'].'" class="openPopUp notAJAX" title="'.__('Click to enlarge preview').'" width="300" height="400">';
+//    if (isset($rec_d['member_image']) && file_exists(IMGBS.'/persons/'.$rec_d['member_image'])) {
+        $str_input .= '<a href="https://res.cloudinary.com/dqq8siyfu/image/upload/w_300/'.$rec_d['member_image'].'" class="openPopUp notAJAX" title="'.__('Click to enlarge preview').'" width="300" height="400">';
         // $str_input .= '<img src="'.$upper_dir.'../lib/minigalnano/createthumb.php?filename=images/persons/'.urlencode(($rec_d['member_image']??'photo.png')).'&width=130" class="img-fluid" alt="Image cover">';
-        $str_input .= '<img src="'.$upper_dir.'../images/persons/'.urlencode(($rec_d['member_image']??'photo.png')).'?'.date('this').'" class="img-fluid rounded" alt="Image cover">';
+        $str_input .= '<img src="https://res.cloudinary.com/dqq8siyfu/image/upload/w_200/'.$rec_d['member_image'].'" class="img-fluid rounded" alt="Image cover">';
         $str_input .= '</a>';
-        $str_input .= '<a href="'.MWB.'membership/index.php" postdata="removeImage=true&mimg='.$itemID.'&img='.($rec_d['member_image']??'photo.png').'" loadcontainer="imageFilename" class="s-margin__bottom-1 s-btn btn btn-danger btn-block rounded-0 makeHidden removeImage">'.__('Remove Image').'</a>';
-    }else{
-        $str_input .= '<img src="'.SWB.'images/persons/person.png'.'?'.date('this').'" class="img-fluid rounded" alt="Image cover">';
-    }
+        //$str_input .= '<a href="'.MWB.'membership/index.php" postdata="removeImage=true&mimg='.$itemID.'&img='.($rec_d['member_image']??'photo.png').'" loadcontainer="imageFilename" class="s-margin__bottom-1 s-btn btn btn-danger btn-block rounded-0 makeHidden removeImage">'.__('Remove Image').'</a>';
+//    }else{
+        //$str_input .= '<img src="https://res.cloudinary.com/dqq8siyfu/image/upload/w_200/'.$rec_d['member_image'].'" class="img-fluid rounded" alt="Image cover">';
+   // }
     $str_input .= '</div>';
     $str_input .= '</div>';
-    $str_input .= '<div class="custom-file col-4">';
-    $str_input .= simbio_form_element::textField('file', 'image', '', 'class="custom-file-input"');
-    $str_input .= '<label class="custom-file-label" for="customFile">Choose file</label>';
-    $str_input .= '</div>';
-    $str_input .= ' <div class="mt-2 ml-2">Maximum '.$sysconf['max_image_upload'].' KB</div>';
-    $str_input .= '</div>';
+//    $str_input .= '<div class="custom-file col-4">';
+//    $str_input .= simbio_form_element::textField('file', 'image', '', 'class="custom-file-input"');
+//    $str_input .= '<label class="custom-file-label" for="customFile">Choose file</label>';
+//    $str_input .= '</div>';
+//    $str_input .= ' <div class="mt-2 ml-2">Maximum '.$sysconf['max_image_upload'].' KB</div>';
+//    $str_input .= '</div>';
     // $str_input = '<div id="imageFilename"><a href="'.SWB.'images/persons/'.$rec_d['member_image'].'" class="openPopUp notAJAX"><strong>'.$rec_d['member_image'].'</strong></a> <a href="'.MWB.'membership/index.php" postdata="removeImage=true&mimg='.$itemID.'&img='.$rec_d['member_image'].'" loadcontainer="imageFilename" class="makeHidden removeImage">'.__('REMOVE IMAGE').'</a></div>';    
     // $str_input .= simbio_form_element::textField('file', 'image');
     // $str_input .= ' '.__('Maximum').' '.$sysconf['max_image_upload'].' KB';
-    if ($sysconf['webcam'] !== false) {
-      $str_input .= '<textarea id="base64picstring" name="base64picstring" style="display: none;"></textarea>';
-
-      if ($sysconf['webcam'] == 'flex') {
-        $str_input .= '<object id="flash_video" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" height="280px" width="100%">';
-        $str_input .= '<param name="src" value="'.SWB.'lib/flex/ShotSLiMSMemberPicture.swf"/>';
-        $str_input .= '<embed name="src" src="'.SWB.'lib/flex/ShotSLiMSMemberPicture.swf" height="280px" width="100%"/>';
-        $str_input .= '</object>';
-      }
-      elseif ($sysconf['webcam'] == 'html5') {
-        $str_input .= '<div class="makeHidden_">';
-        $str_input .= '<p>'.__('or take a photo').'</p>';
-        $str_input .= '<div class="form-inline">';
-        $str_input .= '<div class="form-group pr-2">';
-        $str_input .= '<button id="btn_load" class="btn btn-primary" onclick="loadcam(this)">'.__('Load Camera').'</button>';
-        $str_input .= '</div>';
-        $str_input .= '<div class="form-group pr-2">';
-        $str_input .= '<select class="form-control" onchange="aspect(this)"><option value="1">1x1</option><option value="2" selected>2x3</option><option value="3">3x4</option></select>';
-        $str_input .= '</div>';
-        $str_input .= '<div class="form-group pr-2">';
-        $str_input .= '<select class="form-control" id="cmb_format" onchange="if(pause){set();}"><option value="png">PNG</option><option value="jpg">JPEG</option></select>';
-        $str_input .= '</div>';
-        $str_input .= '<div class="form-group pr-2">';
-        $str_input .= '<button id="btn_pause" class="btn btn-primary" onclick="snapshot(this)" disabled>'.__('Capture').'</button>';
-        $str_input .= '</div>';
-        $str_input .= '<div class="form-group pr-2">';
-        $str_input .= '<button type="button" id="btn_reset" class="btn btn-danger" onclick="resetvalue()">'.__('Reset').'</button>';
-        $str_input .= '</div>';
-        $str_input .= '</div>';
-        $str_input .= '<div id="my_container" class="makeHidden_ mt-2" style="width: 400px; height: 300px; border: 1px solid #f4f4f4; position: relative;">';
-        $str_input .= '<video id="my_vid" autoplay width="400" height="300" style="float: left; position: absolute; left: 10;"></video>';
-        $str_input .= '<canvas id="my_canvas" width="400" height="300" style="float: left; position: absolute; left: 10; visibility: hidden;"></canvas>';
-        $str_input .= '<div id="my_frame" style="border: 1px solid #CCC; width: 160px; height: 240px; z-index: 2; margin: auto; position: absolute; top: 0; bottom: 0; left: 0; right: 0;"></div></div>';
-        $str_input .= '<canvas id="my_preview" width="160" height="240" style="width: 160px; height: 240px; border: 1px solid #f4f4f4; display: none;"></canvas>';
-        }
-    }
+//    if ($sysconf['webcam'] !== false) {
+//      $str_input .= '<textarea id="base64picstring" name="base64picstring" style="display: none;"></textarea>';
+//
+//      if ($sysconf['webcam'] == 'flex') {
+//        $str_input .= '<object id="flash_video" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" height="280px" width="100%">';
+//        $str_input .= '<param name="src" value="'.SWB.'lib/flex/ShotSLiMSMemberPicture.swf"/>';
+//        $str_input .= '<embed name="src" src="'.SWB.'lib/flex/ShotSLiMSMemberPicture.swf" height="280px" width="100%"/>';
+//        $str_input .= '</object>';
+//      }
+//      elseif ($sysconf['webcam'] == 'html5') {
+//        $str_input .= '<div class="makeHidden_">';
+//        $str_input .= '<p>'.__('or take a photo').'</p>';
+//        $str_input .= '<div class="form-inline">';
+//        $str_input .= '<div class="form-group pr-2">';
+//        $str_input .= '<button id="btn_load" class="btn btn-primary" onclick="loadcam(this)">'.__('Load Camera').'</button>';
+//        $str_input .= '</div>';
+//        $str_input .= '<div class="form-group pr-2">';
+//        $str_input .= '<select class="form-control" onchange="aspect(this)"><option value="1">1x1</option><option value="2" selected>2x3</option><option value="3">3x4</option></select>';
+//        $str_input .= '</div>';
+//        $str_input .= '<div class="form-group pr-2">';
+//        $str_input .= '<select class="form-control" id="cmb_format" onchange="if(pause){set();}"><option value="png">PNG</option><option value="jpg">JPEG</option></select>';
+//        $str_input .= '</div>';
+//        $str_input .= '<div class="form-group pr-2">';
+//        $str_input .= '<button id="btn_pause" class="btn btn-primary" onclick="snapshot(this)" disabled>'.__('Capture').'</button>';
+//        $str_input .= '</div>';
+//        $str_input .= '<div class="form-group pr-2">';
+//        $str_input .= '<button type="button" id="btn_reset" class="btn btn-danger" onclick="resetvalue()">'.__('Reset').'</button>';
+//        $str_input .= '</div>';
+//        $str_input .= '</div>';
+//        $str_input .= '<div id="my_container" class="makeHidden_ mt-2" style="width: 400px; height: 300px; border: 1px solid #f4f4f4; position: relative;">';
+//        $str_input .= '<video id="my_vid" autoplay width="400" height="300" style="float: left; position: absolute; left: 10;"></video>';
+//        $str_input .= '<canvas id="my_canvas" width="400" height="300" style="float: left; position: absolute; left: 10; visibility: hidden;"></canvas>';
+//        $str_input .= '<div id="my_frame" style="border: 1px solid #CCC; width: 160px; height: 240px; z-index: 2; margin: auto; position: absolute; top: 0; bottom: 0; left: 0; right: 0;"></div></div>';
+//        $str_input .= '<canvas id="my_preview" width="160" height="240" style="width: 160px; height: 240px; border: 1px solid #f4f4f4; display: none;"></canvas>';
+//        }
+//    }
 
     $form->addAnything(__('Photo'), $str_input);
 
@@ -671,8 +671,9 @@ $(document).ready(function() {
       $_q = $obj_db->query('SELECT member_image,member_name,member_address,member_phone FROM member WHERE member_id = "'.$array_data[0].'"');
       if(isset($_q->num_rows)){
         $_d = $_q->fetch_row();
-        if($_d[0] != NULL){      
-          $image = file_exists(IMGBS.'/persons/'.$_d[0])?'../images/persons/'.$_d[0]:'../images/persons/photo.png';
+        if($_d[0] != NULL){
+	        //$image = file_exists(IMGBS.'/persons/'.$_d[0])?'../images/persons/'.$_d[0]:'../images/persons/photo.png';
+	        $image = "https://res.cloudinary.com/dqq8siyfu/image/upload/w_200/".$_d[0];
         }
         $addr  = $_d[2]!=''?'<i class="fa fa-map-marker" aria-hidden="true"></i></i>&nbsp;'.$_d[2]:'';
         $phone = $_d[3]!=''?'<i class="fa fa-phone" aria-hidden="true"></i>&nbsp;'.$_d[3]:'';

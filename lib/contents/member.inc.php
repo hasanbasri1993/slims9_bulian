@@ -209,7 +209,8 @@ if (isset($_POST['clear_biblio'])) {
 
 if ($is_member_login) :
 
-    $member_image = $_SESSION['m_image'] && file_exists(IMGBS . 'persons/' . $_SESSION['m_image']) ? $_SESSION['m_image'] : 'person.png';
+    //$member_image = $_SESSION['m_image'] && file_exists(IMGBS . 'persons/' . $_SESSION['m_image']) ? $_SESSION['m_image'] : 'person.png';
+    $member_image =  "https://res.cloudinary.com/dqq8siyfu/image/upload/w_200/".$_SESSION['m_image'] ;
 
     // require file
     require SIMBIO . 'simbio_GUI/table/simbio_table.inc.php';
@@ -706,7 +707,7 @@ if ($is_member_login) :
     <div class="d-flex">
         <div style="width: 16rem;" class="bg-grey-light p-4" id="member_sidebar">
             <div class="p-4">
-                <img src="./images/persons/<?php echo $member_image; ?>" alt="member photo" class="rounded shadow">
+                <img src="<?php echo $member_image; ?>" alt="member photo" class="rounded shadow">
             </div>
             <a href="index.php?p=member&logout=1" class="btn btn-danger btn-block"><i
                         class="fas fa-sign-out-alt mr-2"></i><?php echo __('LOGOUT'); ?></a>
