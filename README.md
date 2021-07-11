@@ -16,3 +16,20 @@ to learn more about GPL.
 - PHP GD enabled
 - PHP gettext enabled
 - PHP mbstring enabled
+
+### Set ENV
+
+Add bottom .htacces
+```
+<IfModule mod_env.c>
+SetEnv servername xxxxxx
+SetEnv username xxxxxx
+SetEnv password xxxxxx
+SetEnv dbname xxxxxx
+SetEnv DB_HOST xxxxxx
+SetEnv DB_PORT xxxxxx
+SetEnv DB_NAME xxxxxx
+SetEnv DB_USERNAME xxxxxx
+SetEnv DB_PASSWORD xxxxxx
+</IfModule>
+```
