@@ -130,8 +130,10 @@ if (isset($_GET['select_lang'])) {
                     headers: {'Content-Type': 'multipart/form-data' }
                 })
                     .then(res => {
-                        this.textInfo = res.data
-                        this.image = `./images/persons/member_${this.memberId}.jpg`
+                        //this.textInfo = res.data
+                        this.textInfo = res.data[0]
+                        //this.image = `./images/persons/member_${this.memberId}.jpg`
+                        this.image = `https://res.cloudinary.com/dqq8siyfu/image/upload/w_200,h_200,c_thumb,q_auto:good/${res.data[1]}`
                         <?php if ($sysconf['template']['visitor_log_voice']) : ?>
                             this.textToSpeech(this.textInfo.replace(/(<([^>]+)>)/ig, ''))
                         <?php endif; ?>

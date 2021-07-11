@@ -158,7 +158,7 @@ if (isset($_POST['counter'])) {
   $memberID = trim($_POST['memberID']);
   $counter = setCounter($memberID);
   if ($counter === true) {
-    echo $member_name . __(', thank you for inserting your data to our visitor log');
+    echo json_encode([$member_name . __(', thank you for inserting your data to our visitor log'), $photo]);
     if ($expire) {
       echo '<div class="error visitor-error">'.__('Your membership already EXPIRED, please renew/extend your membership immediately').'</div>';
     }
