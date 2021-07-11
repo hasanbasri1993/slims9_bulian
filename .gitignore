@@ -45,4 +45,3 @@ $RECYCLE.BIN/
 *.lnk
 
 /vendor/
-composer.lock
