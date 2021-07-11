@@ -45,7 +45,7 @@ foreach ($allowed_counter_ip as $ip) {
 }
 
 if ($sysconf['enable_counter_by_ip'] && !$confirmation) {
-    header ("location: index.php");
+   // header ("location: index.php");
 }
 
 // start the output buffering for main content
