@@ -1,21 +1,22 @@
 {
-    "name": "slims/slims9_bulian",
-    "description": "SLiMS (Senayan Library Management System)",
-    "type": "project",
-    "require": {
-        "elasticsearch/elasticsearch": "~6.0",
-        "ext-json": "*",
-        "volnix/csrf": "~1.0",
-        "monolog/monolog": "^2.0",
-        "ramsey/uuid": "^4.0",
-        "ifsnop/mysqldump-php": "^2.9",
-        "ext-mysqli": "*",
-        "ext-mbstring": "*",
-        "ext-gettext": "*",
-        "ext-gd": "*"
-    },
-    "require-dev": {
-        "heroku/heroku-buildpack-php": "*"
-    },
-    "license": "GNU GPL v3"
+  "name": "slims/slims9_bulian",
+  "description": "SLiMS (Senayan Library Management System)",
+  "type": "project",
+  "require": {
+    "elasticsearch/elasticsearch": "~6.0",
+    "ext-json": "*",
+    "volnix/csrf": "~1.0",
+    "monolog/monolog": "^2.0",
+    "ramsey/uuid": "^4.0",
+    "ifsnop/mysqldump-php": "^2.9",
+    "ext-mysqli": "*",
+    "ext-mbstring": "*",
+    "ext-gettext": "*",
+    "ext-gd": "*",
+    "cloudinary/cloudinary_php": "^2"
+  },
+  "require-dev": {
+    "heroku/heroku-buildpack-php": "*"
+  },
+  "license": "GNU GPL v3"
 }

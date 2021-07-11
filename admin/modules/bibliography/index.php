@@ -26,7 +26,10 @@ if (!defined('INDEX_AUTH')) {
 }
 
 #use SLiMS\AdvancedLogging;
-use SLiMS\AlLibrarian;
+	use Cloudinary\Api\Exception\ApiError;
+	use Cloudinary\Api\Upload\UploadApi;
+	use Cloudinary\Cloudinary;
+	use SLiMS\AlLibrarian;
 
 // key to get full database access
 define('DB_ACCESS', 'fa');
@@ -230,6 +233,20 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
             $img_upload_status = $image_upload->doUpload('image', preg_replace('@\s+@i', '_', $_FILES['image']['name']));
             if ($img_upload_status == UPLOAD_SUCCESS) {
                 $data['image'] = $dbs->escape_string($image_upload->new_filename);
+		        $cloudinary = new Cloudinary(getenv('cloudinary_url'));
+	            try {
+		            $up_cloud =     (new UploadApi())->upload(IMGBS.'docs/'.$data['image'] ,
+			            [
+				            "public_id"=> $data['image'],
+				            "overwrite" => true,
+				            "folder" => "library/docs/"
+			            ]
+		            );
+		            $data['image'] = str_replace('library/docs/',"", $up_cloud['public_id']) .".".$up_cloud['format'];
+	            } catch (ApiError $e) {
+		            utility::jsToastr(__('System Configuration'), $e, 'error');
+	            }
+	
                 // write log
                 utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'bibliography', $_SESSION['realname'] . ' upload image file ' . $image_upload->new_filename);
                 utility::jsToastr('Bibliography', __('Image Uploaded Successfully'), 'success');
@@ -953,9 +970,14 @@ if (isset($_GET['action']) && $_GET['action'] == 'history') {
     if ($in_pop_up) {
         $upper_dir = '../../';
     }
-    if (isset($rec_d['image']) && file_exists('../../../images/docs/' . $rec_d['image'])) {
-        $str_input .= '<a href="' . SWB . 'images/docs/' . ($rec_d['image'] ?? '') . '" class="openPopUp notAJAX" title="' . __('Click to enlarge preview') . '">';
-        $str_input .= '<img src="' . $upper_dir . '../images/docs/' . urlencode($rec_d['image'] ?? '') . '" class="img-fluid rounded" alt="Image cover">';
+    //if (isset($rec_d['image']) && file_exists('../../../images/docs/' . $rec_d['image'])) {
+    if (isset($rec_d['image'])) {
+        $str_input .=
+            '<a href="https://res.cloudinary.com/dqq8siyfu/image/upload/q_auto:good/library/docs/' .
+            ($rec_d['image'] ?? '') . '" class="openPopUp notAJAX" title="' . __('Click to enlarge preview') . '">';
+        $str_input .=
+            '<img src="../lib/minigalnano/createthumb.php?filename=images/docs/' .
+            urlencode($rec_d['image'] ?? '') . '" class="img-fluid rounded" alt="Image cover">';
         $str_input .= '</a>';
         $str_input .= '<a href="' . MWB . 'bibliography/index.php" postdata="removeImage=true&bimg=' . $itemID . '&img=' . ($rec_d['image'] ?? '') . '" loadcontainer="imageFilename" class="s-margin__bottom-1 mt-1 s-btn btn btn-danger btn-block makeHidden removeImage">' . __('Remove Image') . '</a>';
     } else {

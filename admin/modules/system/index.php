@@ -22,7 +22,10 @@
 /* Global application configuration */
 
 // key to authenticate
-if (!defined('INDEX_AUTH')) {
+	use Cloudinary\Api\Exception\ApiError;
+	use Cloudinary\Cloudinary;
+	
+	if (!defined('INDEX_AUTH')) {
   define('INDEX_AUTH', '1');
 }
 
@@ -52,6 +55,7 @@ require SIMBIO.'simbio_GUI/form_maker/simbio_form_table_AJAX.inc.php';
 require SIMBIO.'simbio_GUI/table/simbio_table.inc.php';
 require SIMBIO.'simbio_DB/simbio_dbop.inc.php';
 require SIMBIO.'simbio_FILE/simbio_file_upload.inc.php';
+$cloudinary = new Cloudinary(getenv('cloudinary_url'));
 
 if (!function_exists('addOrUpdateSetting')) {
     function addOrUpdateSetting($name, $value) {
@@ -110,13 +114,28 @@ if (isset($_POST['updateData'])) {
       $image_upload->setUploadDir(IMGBS.'default');
       $img_upload_status = $image_upload->doUpload('image','logo');
       if ($img_upload_status == UPLOAD_SUCCESS) {
+        try {
+           $up_cloud =  $cloudinary->uploadApi()->upload(
+	           IMGBS.'default/logo', [
+                "public_id"=> "logo",
+                "filename_override" =>"logo",
+                "unique_filename	" => false,
+                "overwrite" => true,
+                "use_filename" => true,
+                "folder" => "library/default"
+                    ]);
+            echo json_encode($up_cloud);
+            utility::jsToastr(__('System Configuration'), json_encode($up_cloud));
+        } catch (ApiError $e) {
+            utility::jsToastr(__('System Configuration'), $e, 'error');
+        }
         $logo_image = $dbs->escape_string($image_upload->new_filename);
         $update = $dbs->query('UPDATE setting SET setting_value=\''.$dbs->escape_string(serialize($logo_image)).'\' WHERE setting_name=\'logo_image\'');
         if($update) {
           $dbs->query('INSERT INTO setting SET setting_value=\''.$dbs->escape_string(serialize($logo_image)).'\', setting_name=\'logo_image\'');
         }
       }else{
-        utility::jsToastr(__('System Configuration'), $image_upload->error, 'error'); 
+        utility::jsToastr(__('System Configuration'), $image_upload->error, 'error');
       }
     }
 
