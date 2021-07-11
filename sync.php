@@ -31,9 +31,8 @@
 		die("Connection failed: " . $conn_localhost->connect_error);
 	}
 	
-	$sql = "SELECT master_santri.induk AS 'member_id',CONCAT(master_santri.nama) AS 'member_name',CONCAT(master_kelas.kelas,\"\",master_rombel.rombel,\"-\",master_sekolah.sekolah) AS 'member_notes',IF (master_santri.jk=\"L\",\"1\",\"0\") AS \"gender\",CONCAT(master_santri.alamat_orangtua,\" \",master_santri.desa,\" \",kabupaten,\" \",master_santri.kodepos,\" \",master_santri.propinsi,\"-\",master_sekolah.sekolah) AS 'member_address',master_santri.tanggal_lahir AS 'birth_date',master_santri.kodepos AS 'postal_code',master_santri.dulidomail AS 'member_mail_address',master_santri.dulidomail AS 'member_email',IF (foto IS NULL OR foto='','v1601997443/fotosantriaws/person-icon_v4pkh1_kysvrv.jpg',CONCAT('fotosantriaws/',master_santri.id,'/',foto)) AS 'member_image' FROM master_rombel_siswa LEFT JOIN master_rombel ON master_rombel.id=master_rombel_siswa.id_rombel LEFT JOIN master_ajaran ON master_ajaran.id=master_rombel.tahun_ajaran LEFT JOIN master_kelas ON master_kelas.id=master_rombel.id_kelas LEFT JOIN master_sekolah ON master_sekolah.id=master_kelas.id_sekolah LEFT JOIN master_santri ON master_santri.id=master_rombel_siswa.id_santri WHERE master_ajaran.STATUS='Y' AND (master_sekolah.sekolah='TMI') ORDER BY master_kelas.id ASC,master_rombel.id ASC,master_santri.nama ASC";
+	$sql = "SELECT master_santri.induk AS 'member_id',CONCAT(master_santri.nama) AS 'member_name',CONCAT(master_kelas.kelas,\"\",master_rombel.rombel,\"-\",master_sekolah.sekolah) AS 'member_notes',IF (master_santri.jk=\"L\",\"1\",\"0\") AS \"gender\",CONCAT(master_santri.alamat_orangtua,\" \",master_santri.desa,\" \",kabupaten,\" \",master_santri.kodepos,\" \",master_santri.propinsi) AS 'member_address',master_santri.tanggal_lahir AS 'birth_date',master_santri.kodepos AS 'postal_code',master_santri.dulidomail AS 'member_mail_address',master_santri.dulidomail AS 'member_email',IF (foto IS NULL OR foto='','v1601997443/fotosantriaws/person-icon_v4pkh1_kysvrv.jpg',CONCAT('fotosantriaws/',master_santri.id,'/',foto)) AS 'member_image' FROM master_rombel_siswa LEFT JOIN master_rombel ON master_rombel.id=master_rombel_siswa.id_rombel LEFT JOIN master_ajaran ON master_ajaran.id=master_rombel.tahun_ajaran LEFT JOIN master_kelas ON master_kelas.id=master_rombel.id_kelas LEFT JOIN master_sekolah ON master_sekolah.id=master_kelas.id_sekolah LEFT JOIN master_santri ON master_santri.id=master_rombel_siswa.id_santri WHERE master_ajaran.STATUS='Y' AND (master_sekolah.sekolah='TMI') ORDER BY master_kelas.id ASC,master_rombel.id ASC,master_santri.nama ASC";
 	$result = $conn->query($sql);
-	
 	
 	$prepareInsert = $conn_localhost->prepare(
 		"INSERT INTO member (
@@ -93,7 +92,7 @@
 			
 			$prepareSelectSantri = $conn_localhost->query("SELECT member_id FROM member WHERE member_id = $member_id");
 			if ($prepareSelectSantri->num_rows > 0) {
-				$prepareUpdate->bind_param("sssssssssiis", $member_name,
+				$prepareUpdate->bind_param("sssssssssisi", $member_name,
 					$member_notes,
 					$gender,
 					$member_address,
@@ -103,8 +102,8 @@
 					$member_email,
 					$member_image,
 					$member_type_id,
-					$member_id,
-					$member_since_date
+					$member_since_date,
+					$member_id
 				);
 				$prepareUpdate->execute();
 				$updated++;
