@@ -158,7 +158,10 @@ if (isset($_POST['counter'])) {
   $memberID = trim($_POST['memberID']);
   $counter = setCounter($memberID);
   if ($counter === true) {
-    echo json_encode([$member_name . __(', thank you for inserting your data to our visitor log'), $photo]);
+    echo json_encode([
+                    "info" => $member_name . __(', thank you for inserting your data to our visitor log'),
+                    "photo" => $photo
+    ]);
     if ($expire) {
       echo '<div class="error visitor-error">'.__('Your membership already EXPIRED, please renew/extend your membership immediately').'</div>';
     }
@@ -212,16 +215,18 @@ $(document).ready( function() {
           data: formData,
           cache: false,
           success: function(respond) {
-            $('#counterInfo').html(respond);
-            $('#text_voice').val(success_text + respond); 
+             respond = JSON.parse(respond)
+              $('#counterInfo').html(respond.info);
+              $('#visitorCounterPhoto').attr('src','https://res.cloudinary.com/dqq8siyfu/image/upload/w_200/'+ respond.photo);
+              $('#text_voice').val(success_text + respond.info);
             // reset counter
-            setTimeout(function() { 
+            setTimeout(function() {
               $('#speak').trigger('click');
               $('#visitorCounterPhoto').attr('src', './images/persons/photo.png');
-              $('#counterInfo').html(defaultMsg); 
+              $('#counterInfo').html(defaultMsg);
               visitorCounterForm.enableForm().find('input[type=text]').val('');
               $('#memberID').focus();
-            }, 1000);
+            }, 2000);
           },
           complete: function() {
             $(this).enableForm().find('input[type=text]').val('');
