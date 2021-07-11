@@ -131,9 +131,9 @@ if (isset($_GET['select_lang'])) {
                 })
                     .then(res => {
                         //this.textInfo = res.data
-                        this.textInfo = res.data[0]
+                        this.textInfo = res.data.info
                         //this.image = `./images/persons/member_${this.memberId}.jpg`
-                        this.image = `https://res.cloudinary.com/dqq8siyfu/image/upload/w_200,h_200,c_thumb,q_auto:good/${res.data[1]}`
+                        this.image = `https://res.cloudinary.com/dqq8siyfu/image/upload/w_200,h_200,c_thumb,q_auto:good/${res.data.photo}`
                         <?php if ($sysconf['template']['visitor_log_voice']) : ?>
                             this.textToSpeech(this.textInfo.replace(/(<([^>]+)>)/ig, ''))
                         <?php endif; ?>
