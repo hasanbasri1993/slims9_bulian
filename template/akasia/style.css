@@ -2178,9 +2178,9 @@ keyframes coverUp 100% {
   text-transform: uppercase;
 }
 .s-visitor-photo {
-  border-radius: 100px;
-  width: 100px;
-  height: 100px;
+  border-radius: 80px;
+  width: 200px;
+  height: 200px;
   margin: 50px auto;
   overflow: hidden;
 }

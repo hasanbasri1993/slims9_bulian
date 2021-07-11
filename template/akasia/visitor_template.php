@@ -32,7 +32,7 @@ $main_template_path = $sysconf['template']['dir'].'/'.$sysconf['template']['them
     <h1><?php echo __('Visitor Counter'); ?></h1>
     <div  id="counterInfo" class="info"><?php echo __('Please insert your library member ID otherwise your full name instead'); ?></div>
     <div class="s-visitor-photo">  
-      <img id="visitorCounterPhoto" src="./images/persons/photo.png"/>
+      <img id="visitorCounterPhoto" class="rounded-full" src="./images/persons/photo.png" alt="visitorCounterPhoto"/>
     </div>
   </header>
   
