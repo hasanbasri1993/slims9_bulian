@@ -49,7 +49,8 @@ class MemberController extends Controller
                 $return[] = array(
                     'name' => $data['member_name'],
                     'type' => $data['member_type_name'],
-                    'image' =>  $this->getImagePath($data['member_image'], 'persons'),
+                    'image' =>  "https://res.cloudinary.com/dqq8siyfu/image/upload/w_200,c_thumb,q_auto:good/$data[member_image]",
+                    //'image' =>  $this->getImagePath($data['member_image'], 'persons'),
                     'total' => $data['total'],
                     'total_title' => count($title),
                     'order' => $data['total']+count($title));
