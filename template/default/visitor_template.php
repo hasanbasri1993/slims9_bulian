@@ -1,55 +1,65 @@
 <?php
-/**
- * @Created by          : Waris Agung Widodo (ido.alit@gmail.com)
- * @Date                : 2020-01-03 08:49
- * @File name           : visitor_template.php
- */
-
-$main_template_path = __DIR__ . '/login_template.inc.php';
-
-// set default language
-if (isset($_GET['select_lang'])) {
-    $select_lang = trim(strip_tags($_GET['select_lang']));
-    // delete previous language cookie
-    if (isset($_COOKIE['select_lang'])) {
-        @setcookie('select_lang', $select_lang, time()-14400, SWB);
-    }
-    // create language cookie
-    @setcookie('select_lang', $select_lang, time()+14400, SWB);
-    $sysconf['default_lang'] = $select_lang;
-} else if (isset($_COOKIE['select_lang'])) {
-    $sysconf['default_lang'] = trim(strip_tags($_COOKIE['select_lang']));
-}
+	/**
+	 * @Created by          : Waris Agung Widodo (ido.alit@gmail.com)
+	 * @Date                : 2020-01-03 08:49
+	 * @File name           : visitor_template.php
+	 */
+	
+	$main_template_path = __DIR__ . '/login_template.inc.php';
+	
+	// set default language
+	if (isset($_GET['select_lang'])) {
+		$select_lang = trim(strip_tags($_GET['select_lang']));
+		// delete previous language cookie
+		if (isset($_COOKIE['select_lang'])) {
+			@setcookie('select_lang', $select_lang, time() - 14400, SWB);
+		}
+		// create language cookie
+		@setcookie('select_lang', $select_lang, time() + 14400, SWB);
+		$sysconf['default_lang'] = $select_lang;
+	} else if (isset($_COOKIE['select_lang'])) {
+		$sysconf['default_lang'] = trim(strip_tags($_COOKIE['select_lang']));
+	}
 
 ?>
 <div class="vegas-slide" style="position: fixed; z-index: -1"></div>
 <div class="flex h-screen w-full" id="visitor-counter" style="background: rgba(0,0,0,0.3)">
     <div class="bg-white w-full md:w-1/3 px-8 pt-8 pb-3 flex flex-col justify-between">
         <div>
-            <h3 class="font-light mb-2"><?= __('Welcome to ').$sysconf['library_name']; ?></h3>
+            <h3 class="font-light mb-2"><?= __('Welcome to ') . $sysconf['library_name']; ?></h3>
             <p class="lead">
-                <?= __('Please fill your member ID or name.')?>
+				<?= __('Please fill your member ID or name.') ?>
             </p>
 
-            <div v-if="textInfo !== ''" class="rounded p-2 mt-4 bg-blue-lighter text-blue-darker md:hidden">{{textInfo}}</div>
+            <div v-if="textInfo !== ''" class="rounded p-2 mt-4 bg-blue-lighter text-blue-darker md:hidden">
+                {{textInfo}}
+            </div>
 
             <form class="mt-4" @submit.prevent="onSubmit">
                 <div class="form-group">
-                    <label for="exampleInputEmail1"><?= __('Member ID')?></label>
-                    <input v-model="memberId" ref="memberId" autofocus type="text" class="form-control" id="exampleInputEmail1"
-                           aria-describedby="emailHelp" placeholder="<?= __('Enter your member ID')?>">
+                    <label for="kartuSantri">Kartu Santri</label>
+                    <input v-model="kartuSantri" ref="kartuSantri" autofocus type="text" class="form-control"
+                           id="kartuSantri"
+                           aria-describedby="emailHelp" placeholder="Tap with your Santri Card">
                 </div>
                 <div class="form-group">
-                    <label for="exampleInputPassword1"><?= __('Institution')?></label>
-                    <input v-model="institution" type="text" class="form-control" id="exampleInputPassword1"
-                           placeholder="<?= __('Enter your institution')?>">
-                    <small id="emailHelp" class="form-text text-muted"><?= __('Enough fill your member ID if you are member of ').$sysconf['library_name']; ?></small>
+                    <label for="memberId"><?= __('Member ID') ?></label>
+                    <input v-model="memberId" ref="memberId" type="text" class="form-control"
+                           id="memberId"
+                           aria-describedby="emailHelp" placeholder="<?= __('Enter your member ID') ?>">
                 </div>
-                <button type="submit" class="btn btn-primary btn-block"><?= __('Check In')?></button>
+                <!--                <div class="form-group">-->
+                <!--                    <label for="exampleInputPassword1">--><? //= __('Institution')?><!--</label>-->
+                <!--                    <input v-model="institution" type="text" class="form-control" id="exampleInputPassword1"-->
+                <!--                           placeholder="--><? //= __('Enter your institution')?><!--">-->
+                <!--                    <small id="emailHelp" class="form-text text-muted">-->
+				<? //= __('Enough fill your member ID if you are member of ').$sysconf['library_name']; ?><!--</small>-->
+                <!--                </div>-->
+                <button type="submit" class="btn btn-primary btn-block"><?= __('Check In') ?></button>
             </form>
         </div>
         <div class="text-right">
-            <small class="text-grey-dark"><?= __('Powered by ')?> <code>SLiMS</code></small>
+            <small class="text-grey-dark"><?= __('Powered by ') ?> <code>SLiMS</code></small>
         </div>
     </div>
     <div class="flex-1 hidden md:block">
@@ -75,12 +85,13 @@ if (isset($_GET['select_lang'])) {
     </div>
 </div>
 
-<script src="<?php echo $sysconf['template']['dir'].'/'.$sysconf['template']['theme'].'/assets/js/axios.min.js'; ?>"></script>
+<script src="<?php echo $sysconf['template']['dir'] . '/' . $sysconf['template']['theme'] . '/assets/js/axios.min.js'; ?>"></script>
 <script>
     new Vue({
         el: '#visitor-counter',
         data() {
             return {
+                kartuSantri: '',
                 memberId: '',
                 institution: '',
                 textInfo: '',
@@ -90,14 +101,14 @@ if (isset($_GET['select_lang'])) {
             }
         },
         mounted() {
-            this.$refs.memberId.focus()
+            this.$refs.kartuSantri.focus()
             this.getQuotes()
         },
         methods: {
-            onImageError: function() {
+            onImageError: function () {
                 this.image = './images/persons/photo.png'
             },
-            getQuotes: function() {
+            getQuotes: function () {
                 axios.get('https://api.quotable.io/random')
                     .then(res => {
                         this.quotes = res.data
@@ -112,13 +123,14 @@ if (isset($_GET['select_lang'])) {
                         this.textInfo = ''
                     })
             },
-            onSubmit: function() {
-                if (this.memberId === '') {
-                    this.resetForm()
-                    return
-                }
+            onSubmit: function () {
                 let url = 'index.php?p=visitor'
                 let data = new FormData()
+                if (this.kartuSantri !== "") {
+                    let decoded = window.atob(this.kartuSantri);
+                    decoded = JSON.parse(decoded);
+                    this.memberId = decoded.induk
+                }
                 data.append('memberID', this.memberId)
                 data.append('institution', this.institution)
                 data.append('counter', 1)
@@ -127,16 +139,16 @@ if (isset($_GET['select_lang'])) {
                     url: url,
                     method: 'post',
                     data: data,
-                    headers: {'Content-Type': 'multipart/form-data' }
+                    headers: {'Content-Type': 'multipart/form-data'}
                 })
                     .then(res => {
                         //this.textInfo = res.data
                         this.textInfo = res.data.info
                         //this.image = `./images/persons/member_${this.memberId}.jpg`
                         this.image = `https://res.cloudinary.com/dqq8siyfu/image/upload/w_200,h_200,c_thumb,q_auto:good/${res.data.photo}`
-                        <?php if ($sysconf['template']['visitor_log_voice']) : ?>
-                            this.textToSpeech(this.textInfo.replace(/(<([^>]+)>)/ig, ''))
-                        <?php endif; ?>
+						<?php if ($sysconf['template']['visitor_log_voice']) : ?>
+                        this.textToSpeech(this.textInfo.replace(/(<([^>]+)>)/ig, ''))
+						<?php endif; ?>
                     })
                     .catch(err => {
                         console.log(err);
@@ -150,11 +162,12 @@ if (isset($_GET['select_lang'])) {
                     })
             },
             resetForm: function () {
+                this.kartuSantri = ''
                 this.memberId = ''
                 this.institution = ''
-                this.$refs.memberId.focus()
+                this.$refs.kartuSantri.focus()
             },
-            textToSpeech: function(message) {
+            textToSpeech: function (message) {
                 var message = new SpeechSynthesisUtterance(message);
                 var voices = speechSynthesis.getVoices();
                 // console.log(message);
