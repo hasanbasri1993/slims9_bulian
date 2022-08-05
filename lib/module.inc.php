@@ -151,7 +151,7 @@ class module extends simbio
      * @param string $str_module
      * @return  array
      */
-    public function getSubMenuItems($str_module = '')
+    public function getSubMenuItems(string $str_module = ''): array
     {
         global $dbs;
         $_submenu_file = $this->modules_dir . $str_module . DIRECTORY_SEPARATOR . 'submenu.php';
@@ -168,7 +168,7 @@ class module extends simbio
                 $tmp_menu = [];
                 if (isset($menu) && count($menu) > 0) {
                     foreach ($menu as $item) {
-                        if ($item[0] === 'Header' || in_array(md5($item[1]), $_SESSION['priv'][$str_module]['menus'])) $tmp_menu[] = $item;
+	                    if ($item[0] === 'Header' || md5($item[1], $_SESSION['priv'][$str_module]['menus'])) $tmp_menu[] = $item;
                     }
                 }
                 $menu = $tmp_menu;
