@@ -55,7 +55,7 @@ require SIMBIO.'simbio_GUI/form_maker/simbio_form_table_AJAX.inc.php';
 require SIMBIO.'simbio_GUI/table/simbio_table.inc.php';
 require SIMBIO.'simbio_DB/simbio_dbop.inc.php';
 require SIMBIO.'simbio_FILE/simbio_file_upload.inc.php';
-$cloudinary = new Cloudinary(getenv('cloudinary_url'));
+$cloudinary = new Cloudinary(CLOUDINARY_URL);
 
 if (!function_exists('addOrUpdateSetting')) {
     function addOrUpdateSetting($name, $value) {

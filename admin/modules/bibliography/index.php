@@ -233,7 +233,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
             if ($img_upload_status == UPLOAD_SUCCESS) {
                 $data['image'] = $dbs->escape_string($image_upload->new_filename);
 	            try {
-		            $cloudinary = new Cloudinary(getenv('cloudinary_url'));
+		            $cloudinary = new Cloudinary(CLOUDINARY_URL);
 		            $up_cloud =  $cloudinary->uploadApi()->upload(IMGBS.'docs/'.$data['image'] ,
 			            [
 				            "public_id"=> $data['image'],
