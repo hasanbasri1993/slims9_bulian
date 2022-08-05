@@ -116,7 +116,7 @@ if (isset($_POST['updateData'])) {
       if ($img_upload_status == UPLOAD_SUCCESS) {
         try {
            $up_cloud =  $cloudinary->uploadApi()->upload(
-	           IMGBS.'default/logo', [
+	           IMGBS.'default/logo.png', [
                 "public_id"=> "logo",
                 "filename_override" =>"logo",
                 "unique_filename	" => false,
@@ -245,7 +245,7 @@ if (isset($_POST['updateData'])) {
     // write log
     utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'system', $_SESSION['realname'].' change application global configuration', 'Global Config', 'Update');
     utility::jsToastr(__('System Configuration'), __('Settings saved. Refreshing page'), 'success'); 
-    echo '<script type="text/javascript">setTimeout(() => { top.location.href = \''.AWB.'index.php?mod=system\' }, 2000);</script>';
+    echo '<script type="text/javascript">setTimeout(() => { top.location.href = \''.AWB.'index.php?mod=system\' }, 10000);</script>';
     exit();
 }
 
@@ -276,7 +276,7 @@ $form->addTextField('text', 'library_subname', __('Library Subname'), $sysconf['
 $str_input = '';
 if(isset($sysconf['logo_image']) && file_exists(IMGBS.'default/'.$sysconf['logo_image']) && $sysconf['logo_image']!=''){
     $str_input .= '<div style="padding:10px;">';
-    $str_input .= '<img src="../lib/minigalnano/createthumb.php?filename=images/default/'.$sysconf['logo_image'].'&width=130" class="img-fluid rounded" alt="Image cover">';
+    $str_input .= '<img src="../images/default/logo.png" class="img-fluid rounded" alt="Image cover">';
     $str_input .= '<a href="'.MWB.'system/index.php" postdata="removeImage=true&limg='.$sysconf['logo_image'].'" class="btn btn-sm btn-danger">'.__('Remove Image').'</a></div>';
 }
 $str_input .= '<div class="custom-file col-3">';
