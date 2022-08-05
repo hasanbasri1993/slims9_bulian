@@ -21,7 +21,10 @@
 /* Staffs/Application Users Management section */
 
 // key to authenticate
-define('INDEX_AUTH', '1');
+	use Cloudinary\Api\Exception\ApiError;
+	use Cloudinary\Cloudinary;
+	
+	define('INDEX_AUTH', '1');
 
 // main system configuration
 require '../../../sysconfig.inc.php';
@@ -144,21 +147,48 @@ if (isset($_POST['saveData'])) {
           $upload_status = $upload->doUpload('image', $new_filename);
           if ($upload_status == UPLOAD_SUCCESS) {
             $data['user_image'] = $dbs->escape_string($upload->new_filename);
+	          try {
+		          $cloudinary = new Cloudinary(CLOUDINARY_URL);
+		          $up_cloud =  $cloudinary->uploadApi()->upload(IMGBS.'persons/'.$data['user_image'] ,
+			          [
+				          "public_id"=> substr($data['user_image'], 0, strrpos($data['user_image'], '.')),
+				          "overwrite" => true,
+				          "folder" => "library/persons/"
+			          ]
+		          );
+		          utility::jsToastr(__('System Configuration'), $data['user_image']);
+	          } catch (ApiError $e) {
+		          utility::jsToastr(__('System Configuration'), $e, 'error');
+	          }
           }
-        } else if (!empty($_POST['base64picstring'])) {
-            list($filedata, $filedom) = explode('#image/type#', $_POST['base64picstring']);
+        }
+        else if (!empty($_POST['base64picstring']))
+        {
+          list($filedata, $filedom) = explode('#image/type#', $_POST['base64picstring']);
           $filedata = base64_decode($filedata);
           $fileinfo = getimagesizefromstring($filedata);
           $valid = strlen($filedata)/1024 < $sysconf['max_image_upload'];
-          $valid = (!$fileinfo || $valid === false) ? false : in_array($fileinfo['mime'], $sysconf['allowed_images_mimetype']);
+          $valid = !(!$fileinfo || $valid === false) && in_array($fileinfo['mime'], $sysconf['allowed_images_mimetype']);
 			    $new_filename = 'user_'.str_replace(array(',', '.', ' ', '-'), '_', strtolower($data['username'])).'.'.strtolower($filedom);
-
 			    if ($valid AND file_put_contents(IMGBS.'persons/'.$new_filename, $filedata)) {
 				    $data['user_image'] = $dbs->escape_string($new_filename);
 				    if (!defined('UPLOAD_SUCCESS')) define('UPLOAD_SUCCESS', 1);
 				    $upload_status = UPLOAD_SUCCESS;
+				    try {
+					    $cloudinary = new Cloudinary(CLOUDINARY_URL);
+					    $up_cloud =  $cloudinary->uploadApi()->upload(IMGBS.'persons/'.$data['user_image'] ,
+						    [
+							    "public_id"=> substr($data['user_image'], 0, strrpos($data['user_image'], '.')),
+							    "overwrite" => true,
+							    "folder" => "library/persons/"
+						    ]
+					    );
+					    utility::jsToastr(__('System Configuration'), $data['user_image']);
+				    } catch (ApiError $e) {
+					    utility::jsToastr(__('System Configuration'), $e, 'error');
+				    }
 			    }
-		    }
+        }
 
         // create sql op object
         $sql_op = new simbio_dbop($dbs);

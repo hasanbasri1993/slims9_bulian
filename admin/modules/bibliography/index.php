@@ -236,7 +236,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
 		            $cloudinary = new Cloudinary(CLOUDINARY_URL);
 		            $up_cloud =  $cloudinary->uploadApi()->upload(IMGBS.'docs/'.$data['image'] ,
 			            [
-				            "public_id"=> $data['image'],
+				            "public_id"=> substr($data['image'], 0, strrpos($data['image'], '.')),
 				            "overwrite" => true,
 				            "folder" => "library/docs/"
 			            ]
