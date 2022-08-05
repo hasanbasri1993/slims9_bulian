@@ -38,10 +38,9 @@ if ($librarian_q->num_rows > 0) {
     echo '<div class="row-fluid librarian">';
     echo '<div class="span2">';
     if ($librarian['user_image']) {
-      echo '<div class="librarian-image"><img src="'.SWB.'images/persons/'.$librarian['user_image'].'" alt="'.$librarian['realname'].'" /></div>';
-    } else {
-      echo '<div><img src="'.SWB.'images/persons/person.png" alt="'.$librarian['realname'].'" /></div>';
-    }
+	    $librarian_image_path =   "https://res.cloudinary.com/dqq8siyfu/image/upload/c_scale,h_446/v1659704875/library/persons/".$librarian['user_image'] ;
+		echo '<div class="librarian-image"><img src="'.$librarian_image_path.'" alt="'.$librarian['realname'].'" /></div>';
+    } else echo '<div><img src="'.SWB.'images/persons/person.png" alt="librarian-image" /></div>';
     echo '</div>';
     echo '<div class="span8">';
     echo '<div class="row-fluid"><div class="span3 key">'.__('Name').'</div><div class="span7">'.$librarian['realname'].'</div></div>';

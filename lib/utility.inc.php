@@ -48,15 +48,16 @@ class utility
         echo 'alert("'.$str_message.'")'."\n";
         echo '</script>'."\n";
     }
-
-  /**
-   * Static Method to send out toastr notification
-   *
-   * @param   string $type [info, success, warning, error]
-   * @param   string $str_message
-   * @return  void
-   */
-    public static function jsToastr($title, $str_message, $type = 'info')
+	
+	/**
+	 * Static Method to send out toastr notification
+	 *
+	 * @param $title
+	 * @param string $str_message
+	 * @param string $type [info, success, warning, error]
+	 * @return  void
+	 */
+    public static function jsToastr($title, string $str_message, string $type = 'info')
     {
       if (!$str_message) {
         return;
