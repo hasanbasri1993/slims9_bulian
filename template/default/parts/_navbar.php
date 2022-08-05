@@ -102,8 +102,8 @@ HTML;
                      aria-haspopup="true" aria-expanded="false">
                       <img class="w-6 h-6 rounded-full ml-2 mr-2"
                            src="<?php echo $member_image_path; ?>"
-                           alt="Avatar of Jonathan Reinink">
-                    <?php echo $_SESSION['m_name']; ?>
+                           alt="Avatar of Member">
+                    <?= $_SESSION['m_name']; ?>
                   </a>
                   <div class="dropdown-menu dropdown-menu-right">
                       <a class="dropdown-item" href="index.php?p=member"><i class="fas fa-user-circle mr-3"></i> <?= __('Profile');?></a>

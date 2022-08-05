@@ -25,12 +25,12 @@ define('CURRENT_TEMPLATE_DIR', $sysconf['template']['dir'] . '/' . $sysconf['tem
 // ----------------------------------------------------------------------------
 $is_login = utility::isMemberLogin();
 $member_image_name = isset($_SESSION['m_image']) ? $_SESSION['m_image'] : 'person.png';
-$member_image_path = getImagePath($sysconf, $member_image_name, 'persons');
+$member_image_path =   "https://res.cloudinary.com/dqq8siyfu/image/upload/w_100/".$_SESSION['m_image'] ;
 
 // ----------------------------------------------------------------------------
 // Method for create url assets
 // ----------------------------------------------------------------------------
-function assets($path = '')
+function assets($path = ''): string
 {
   return CURRENT_TEMPLATE_DIR . 'assets/' . $path;
 }
@@ -38,7 +38,7 @@ function assets($path = '')
 // ----------------------------------------------------------------------------
 // Get popular title by loan
 // ----------------------------------------------------------------------------
-function getPopularBiblio($dbs, $limit = 5)
+function getPopularBiblio($dbs, $limit = 5): array
 {
   $sql = "SELECT b.biblio_id, b.title, b.image, COUNT(*) AS total
           FROM loan AS l
