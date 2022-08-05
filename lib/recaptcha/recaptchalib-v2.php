@@ -47,7 +47,7 @@ function recaptcha_check_answer($secretKey, $remoteip, $response) {
     return $recaptcha_response;
 }
 
-function recaptcha_get_html($siteKey) {
-    return '<script src="https://www.google.com/recaptcha/api.js"></script>
-    <div class="g-recaptcha" data-sitekey="'.$siteKey.'"></div>';
+function recaptcha_get_html($siteKey): string
+{
+    return '<script src="https://www.google.com/recaptcha/api.js"></script><div class="g-recaptcha" data-sitekey="'.$siteKey.'"></div>';
 }
