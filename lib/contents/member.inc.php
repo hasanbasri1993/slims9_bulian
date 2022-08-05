@@ -23,7 +23,9 @@
  */
 
 // be sure that this file not accessed directly
-if (!defined('INDEX_AUTH')) {
+	use Volnix\CSRF\CSRF;
+	
+	if (!defined('INDEX_AUTH')) {
     die("can not access this file directly");
 } elseif (INDEX_AUTH != 1) {
     die("can not access this file directly");
@@ -72,7 +74,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == '1') {
 
 // if there is member login action
 if (isset($_POST['logMeIn']) && !$is_member_login) {
-    if (!\Volnix\CSRF\CSRF::validate($_POST)) {
+    if (!CSRF::validate($_POST)) {
         session_unset();
         echo '<script type="text/javascript">';
         echo 'alert("Invalid login form!");';
@@ -119,12 +121,8 @@ if (isset($_POST['logMeIn']) && !$is_member_login) {
         if ($logon->valid($dbs)) {
             // write log
             utility::writeLogs($dbs, 'member', $username, 'Login', sprintf(__('Login success for member %s from address %s'),$username,$_SERVER['REMOTE_ADDR']));
-            if (isset($_GET['destination'])) {
-                header("location:" . $_GET['destination']);
-            } else {
-                header('Location: index.php?p=member');
-            }
-            exit();
+            if (isset($_GET['destination'])) echo '<script type="text/javascript">window.location = "'.$_GET['destination'].'"</script>';
+            else echo '<script type="text/javascript">window.location = "index.php?p=member"</script>';
         } else {
             // write log
             utility::writeLogs($dbs, 'member', $username, 'Login', sprintf(__('Login FAILED for member %s from address %s'),$username,$_SERVER['REMOTE_ADDR']));
@@ -910,7 +908,7 @@ if ($is_member_login) :
                 <div class="fieldLabel marginTop"><?php echo __('Password'); ?></div>
                 <div class="login_input"><input class="form-control" type="password" name="memberPassWord"
                                                 placeholder="Enter password" required autocomplete="off"/></div>
-                <?= \Volnix\CSRF\CSRF::getHiddenInputString() ?>
+                <?= CSRF::getHiddenInputString() ?>
                 <!-- Captcha in form - start -->
                 <div>
                     <?php if ($sysconf['captcha']['member']['enable']) { ?>
