@@ -27,10 +27,9 @@ if (!defined('INDEX_AUTH')) {
 
 #use SLiMS\AdvancedLogging;
 	use Cloudinary\Api\Exception\ApiError;
-	use Cloudinary\Api\Upload\UploadApi;
 	use Cloudinary\Cloudinary;
 	use SLiMS\AlLibrarian;
-
+ 
 // key to get full database access
 define('DB_ACCESS', 'fa');
 
@@ -233,9 +232,9 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
             $img_upload_status = $image_upload->doUpload('image', preg_replace('@\s+@i', '_', $_FILES['image']['name']));
             if ($img_upload_status == UPLOAD_SUCCESS) {
                 $data['image'] = $dbs->escape_string($image_upload->new_filename);
-		        $cloudinary = new Cloudinary(getenv('cloudinary_url'));
 	            try {
-		            $up_cloud =     (new UploadApi())->upload(IMGBS.'docs/'.$data['image'] ,
+		            $cloudinary = new Cloudinary(getenv('cloudinary_url'));
+		            $up_cloud =  $cloudinary->uploadApi()->upload(IMGBS.'docs/'.$data['image'] ,
 			            [
 				            "public_id"=> $data['image'],
 				            "overwrite" => true,
@@ -988,15 +987,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'history') {
     $str_input .= '<div class="custom-file col-7">';
     $str_input .= simbio_form_element::textField('file', 'image', '', 'class="custom-file-input" id="customFile"');
     $str_input .= '<label class="custom-file-label" for="customFile">' . __('Choose file') . '</label>';
-    $str_input .= '<div style="padding: 10px;margin-left: -25px;">';
-    $str_input .= '<div>' . __('Or download from url') . '</div>';
-    $str_input .= '<div class="form-inline">
-                  <input type="text" id="getUrl" class="form-control" style="width:190px" placeholder="Paste url address here">
-                  <div class="input-group-append">
-                  <button class="btn btn-default" type="button" id="getImage">' . __('Download') . ' <i class="fa fa-spin fa-cog hidden" id="imgLoader"></i></button>
-                  <button class="btn btn-default openPopUp notAJAX ml-2" type="button" id="showEngine" onclick="toggle_search($(\'#title\').val());">' . __('Trying search in DuckduckGo') . '</button>
-                  </div>
-                  </div>';
     $str_input .= '</div>';
     $str_input .= '</div>';
     $str_input .= ' <div class="mt-2 ml-2">Maximum ' . $sysconf['max_image_upload'] . ' KB</div>';

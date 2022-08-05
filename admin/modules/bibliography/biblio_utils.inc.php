@@ -108,7 +108,7 @@ function showTitleAuthors($obj_db, $array_data)
 
   $img = 'images/default/image.png';
   // biblio author detail
-  if ($sysconf['index']['type'] == 'default') {
+	if ($sysconf['index']['type'] == 'default') {
       $_sql_biblio_q = sprintf('SELECT b.title, a.author_name, opac_hide, promoted, b.labels,b.image FROM biblio AS b
           LEFT JOIN biblio_author AS ba ON b.biblio_id=ba.biblio_id
           LEFT JOIN mst_author AS a ON ba.author_id=a.author_id
@@ -124,8 +124,8 @@ function showTitleAuthors($obj_db, $array_data)
           $_labels = $_biblio_d[4];
       }
       $_authors = substr_replace($_authors, '', -3);
-      if($_image!='' AND file_exists('../../../images/docs/'.$_image)){
-        $img = 'images/docs/'.urlencode($_image);  
+      if($_image!=''){
+	      $img = 'https://res.cloudinary.com/dqq8siyfu/image/upload/c_scale,h_65,w_50/v1659696439/library/docs/'.urlencode($_image);
       }
       $_output = '<div class="media">
                     <img class="mr-3 rounded" src="../lib/minigalnano/createthumb.php?filename='.$img.'&width=50&height=65" alt="cover image">
@@ -133,18 +133,18 @@ function showTitleAuthors($obj_db, $array_data)
                       <div class="title">'.stripslashes($_title).'</div><div class="authors">'.$_authors.'</div>
                     </div>
                   </div>';
-  } else {
+  }
+	else {
   	    $_q = $obj_db->query("SELECT opac_hide,promoted FROM biblio WHERE biblio_id=".$array_data[0]);
 	    while ($_biblio_d = $_q->fetch_row()) {
 	      $_opac_hide = (integer)$_biblio_d[0];
 	      $_promoted  = (integer)$_biblio_d[1];
 	    }
-
-      if($array_data[3]!='' AND file_exists('../../../images/docs/'.$array_data[3])){
-        $img = 'images/docs/'.urlencode($array_data[3]);  
+      if($array_data[3]!=''){
+        $img = 'https://res.cloudinary.com/dqq8siyfu/image/upload/c_scale,h_65,w_50/v1659696439/library/docs/'.urlencode($array_data[3]);
       }
       $_output = '<div class="media">
-                    <img class="mr-3 rounded" src="../lib/minigalnano/createthumb.php?filename='.$img.'&width=50&height=65" alt="cover image">
+                    <img class="mr-3 rounded" src="'.$img.'" alt="cover image">
                     <div class="media-body">
                       <div class="title">'.stripslashes($array_data[1]).'</div><div class="authors">'.$array_data[4].'</div>
                     </div>
