@@ -35,11 +35,11 @@ class AdvancedLogging
         if ($sysconf['log']['adv']['enabled']) {
             $log = new Logger('system');
             if ($sysconf['log']['adv']['handler'] == 'fs') {
-                $log->pushHandler(new \Monolog\Handler\StreamHandler($sysconf['log']['adv']['path'].'/system.log', Logger::DEBUG));
+                $log->pushHandler(new StreamHandler($sysconf['log']['adv']['path'].'/system.log', Logger::DEBUG));
             } elseif ($sysconf['log']['adv']['handler'] == 'es') {
                 $client = \Elasticsearch\ClientBuilder::create()
                     ->setHosts(array($sysconf['log']['adv']['host']))
-                    ->build();        
+                    ->build();
                 $options = array(
                     'index' => $sysconf['log']['adv']['index'],
                     'type'  => '_doc',

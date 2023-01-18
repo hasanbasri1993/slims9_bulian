@@ -9,12 +9,12 @@ namespace SLiMS;
 
 
 use Exception;
+use Ifsnop\Mysqldump as IMysqldump;
 use mysqli;
 use PDO;
 use PDOException;
-use Ifsnop\Mysqldump as IMysqldump;
 
-class DB
+class DBMain
 {
     /**
      * PDO instance
@@ -62,10 +62,10 @@ class DB
     public static function getInstance(string $driver = 'pdo'): PDO|mysqli|null
     {
         if ($driver === 'mysqli') {
-            if (is_null(self::$instance_mysqli)) new DB('mysqli');
+            if (is_null(self::$instance_mysqli)) new DBMain('mysqli');
             return self::$instance_mysqli;
         } else {
-            if (is_null(self::$instance)) new DB();
+            if (is_null(self::$instance)) new DBMain();
             return self::$instance;
         }
     }
@@ -97,7 +97,7 @@ class DB
     private function getProfile(string $driver = 'pdo'): array
     {
         $config = $this->getConfig();
-        $defaultProfile = $config['default_profile'];
+        $defaultProfile = $config['main_profile'];
 
         if ($config['proxy']) $defaultProfile = $this->setProxy();
 
