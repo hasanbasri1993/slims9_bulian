@@ -23,7 +23,7 @@
 // be sure that this file not accessed directly
 if (!defined('INDEX_AUTH')) {
     die("can not access this file directly");
-} elseif (INDEX_AUTH != 1) { 
+} elseif (INDEX_AUTH != 1) {
     die("can not access this file directly");
 }
 
@@ -58,10 +58,10 @@ if (isset($_POST['resetPass'])) {
                 $privatekey = $sysconf['captcha']['forgot']['privatekey'];
                 $resp = recaptcha_check_answer ($privatekey,$_SERVER["REMOTE_ADDR"],$_POST["g-recaptcha-response"]);
 
-                if (!$resp->is_valid) {
-                    // What happens when the CAPTCHA was entered incorrectly
-                    $message = __('Captcha incorrect.');
-                } else {
+//                if (!$resp->is_valid) {
+//                    // What happens when the CAPTCHA was entered incorrectly
+//                    $message = __('Captcha incorrect.');
+//                } else {
                     // Validate current email
                     $_q = $dbs->query("SELECT user_id, realname FROM user WHERE email='{$email}'");
                     if ($_q->num_rows > 0) {
@@ -85,7 +85,7 @@ if (isset($_POST['resetPass'])) {
                                 'email' => $email,
                                 'name' => $name
                             );
-                            
+
                             $header = array(
                                 "X-API-KEY: ".$salt
                             );
@@ -108,13 +108,13 @@ if (isset($_POST['resetPass'])) {
                                 $message = __('Cannot send the email. Please try again.');
                             } else {
                                 $message = __('<strong>Congratulations! </strong>An instruction has been sent to your email. Please check your inbox.');
-                            }        
+                            }
                         }
                     } else {
                         $message = __('Current email not found. Please try again.');
                     }
 
-                }
+                //}
             }
         }
     }

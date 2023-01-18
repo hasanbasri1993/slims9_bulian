@@ -19,10 +19,10 @@ class Visitor
      */
     protected array $allowedIp;
     protected string $visitTimeLimit;
-    protected bool $accessAllow = false;
+    protected bool $accessAllow = true;
     protected array $data = [];
     protected bool $alreadyCheckIn = false;
-    protected bool $member = false;
+    protected bool $member = true;
     protected bool $memberExpire = false;
     protected bool $institutionEmpty = false;
     protected string $error = '';
@@ -74,13 +74,13 @@ class Visitor
             {
                 $this->member = true;
                 $data = $statement->fetch(\PDO::FETCH_NUM);
-                
+
                 // set image based on record data
                 $this->image = $data[2]??'person.png';
 
                 // set expire status
                 if ($data[4] == 1) $this->memberExpire = true;
-                
+
                 // unset image and expire status
                 unset($data[4]);
                 unset($data[2]);
@@ -104,7 +104,7 @@ class Visitor
                 Plugins::getInstance()->execute('NON_MEMBER_ON_VISIT', ['data' => array_slice($this->data, 1)]);
             }
 
-        
+
             $insertQuery = "INSERT INTO visitor_count (member_id, member_name, institution, checkin_date) VALUES (?,?,?,?)";
             $insertStatement = $db->prepare($insertQuery);
 
@@ -139,10 +139,10 @@ class Visitor
         $db = DB::getInstance();
         $criteria = 'member_name';
         if ($isMember) $criteria = 'member_id';
-    
+
         $statement = $db->prepare('SELECT checkin_date FROM visitor_count WHERE '.$criteria.'=? ORDER BY checkin_date DESC LIMIT 1');
         $statement->execute([$memberIdOrName]);
-        
+
         if ($statement->rowCount() > 0) {
             $data = $statement->fetchObject();
             $time = new \DateTime($data->checkin_date);
@@ -153,7 +153,7 @@ class Visitor
                 return true;
             }
         }
-    
+
         return false;
     }
 

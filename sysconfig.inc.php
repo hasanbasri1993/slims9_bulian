@@ -278,7 +278,7 @@ $post_max_size = intval(ini_get('post_max_size'))*1024;
 if ($sysconf['max_upload'] > $post_max_size) {
     $sysconf['max_upload'] = $post_max_size-1024;
 }
-$sysconf['max_image_upload'] = 500;
+$sysconf['max_image_upload'] = 10240;
 // allowed image file to upload
 $sysconf['allowed_images'] = array('.jpeg', '.jpg', '.gif', '.png', '.JPEG', '.JPG', '.GIF', '.PNG');
 // allowed file attachment to upload
@@ -334,7 +334,7 @@ $sysconf['currencies'] = array( array('0', 'NONE'), 'Rupiah', 'USD', 'Euro', 'DM
 $sysconf['reserve_expire_periode'] = 7;
 
 // false = send reserve via email
-// true  = reservation will saved directly into reserve table
+// true  = reservation will save directly into reserve table
 $sysconf['reserve_direct_database'] = true;
 
 // false = reserve all item, ignoring loan status
@@ -464,7 +464,7 @@ $sysconf['index']['engine']['es_opts'] = array(
  * Captcha Settings
  */
 // Captcha settings for Senayan Management Console (aka Librarian Login)
-$sysconf['captcha']['smc']['enable'] = false; // value can be 'true' or 'false'
+$sysconf['captcha']['smc']['enable'] = true; // value can be 'true' or 'false'
 $sysconf['captcha']['smc']['type'] = 'recaptcha'; // value can be 'recaptcha' (at this time)
 if ($sysconf['captcha']['smc']['enable']) {
     include_once LIB.$sysconf['captcha']['smc']['type'].DS.'smc_settings.inc.php';
@@ -610,7 +610,7 @@ if (stripos($_SERVER['PHP_SELF'], '/admin') === false) {
                 'httponly' => true,
                 'samesite' => 'Lax',
             ]);
-            
+
 
         }
         // create language cookie
@@ -632,7 +632,7 @@ if (stripos($_SERVER['PHP_SELF'], '/admin') === false) {
 
         //reload page on change language
         header("location:index.php");
-        
+
     } else if (isset($_COOKIE['select_lang'])) {
         $sysconf['default_lang'] = trim(strip_tags($_COOKIE['select_lang']));
     }
