@@ -1,23 +1,27 @@
 <?php
-
-use SLiMS\DB;
-use SLiMS\DBMain;
-
-
-// key to authenticate
-const INDEX_AUTH = '1';
-
-// main system configuration
-require './sysconfig.inc.php';
-
-
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
-mysqli_report(MYSQLI_REPORT_ALL ^ MYSQLI_REPORT_INDEX);
-
-$sql = "
+	
+	error_reporting(E_ALL);
+	ini_set('display_errors', '1');
+	//mysqli_report(MYSQLI_REPORT_ALL ^ MYSQLI_REPORT_INDEX);
+	
+    include './config/sysconfig.local.inc.php';
+	
+	// Create connection
+	$conn = new mysqli(DB_HOST_MAIN, DB_USERNAME_MAIN, DB_PASSWORD_MAIN, DB_NAME_MAIN);
+	// Check connection
+	if ($conn->connect_error) {
+		die("Connection failed: " . $conn->connect_error);
+	}
+	
+	// Create connection
+	$conn_localhost = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME, DB_PORT);
+	// Check connection
+	if ($conn_localhost->connect_error) {
+		die("Connection failed: " . $conn_localhost->connect_error);
+	}
+	
+	$sql = "
 SELECT
-    master_santri.id AS 'santri_id',
     master_santri.induk AS 'member_id',
     CONCAT(master_santri.nama) AS 'member_name',
     CONCAT(master_kelas.kelas,'',master_rombel.rombel,'-',master_sekolah.sekolah) AS 'member_notes',
@@ -27,8 +31,7 @@ SELECT
     master_santri.kodepos AS 'postal_code',
     master_santri.dulidomail AS 'member_mail_address',
     master_santri.dulidomail AS 'member_email',
-    master_santri.foto AS 'foto',
-    IF (foto IS NULL OR foto='','photo.png',CONCAT('member_',master_santri.induk,'.JPG')) AS 'member_image'
+    IF (foto IS NULL OR foto='','v1601997443/fotosantriaws/person-icon_v4pkh1_kysvrv.jpg',CONCAT('fotosantriaws/',master_santri.id,'/',foto)) AS 'member_image'
 FROM master_rombel_siswa
     LEFT JOIN master_rombel ON master_rombel.id=master_rombel_siswa.id_rombel
     LEFT JOIN master_ajaran ON master_ajaran.id=master_rombel.tahun_ajaran
@@ -42,10 +45,10 @@ ORDER BY
     master_kelas.id ASC,
     master_rombel.id ASC,
     master_santri.nama ASC";
-$result = DBMain::getInstance()->query($sql);
-
-$prepareInsert = DB::getInstance()->prepare(
-    "INSERT INTO member (
+	$result = $conn->query($sql);
+	
+	$prepareInsert = $conn_localhost->prepare(
+		"INSERT INTO member (
 					member_id,
 					member_name,
 					member_notes,
@@ -62,11 +65,10 @@ $prepareInsert = DB::getInstance()->prepare(
                     member_since_date,
                     register_date,
                     last_update
-				) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-);
-
-$prepareUpdate = DB::getInstance()->prepare(
-    "UPDATE member SET
+				) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	
+	$prepareUpdate = $conn_localhost->prepare(
+		"UPDATE member SET
 					member_name = ?,
 					member_notes = ?,
 					gender = ?,
@@ -79,81 +81,75 @@ $prepareUpdate = DB::getInstance()->prepare(
                     member_type_id = ?,
                     last_update = ?
 				WHERE member_id = ?
-				"
-);
-
-
-if ($result->rowCount() > 0) {
-    $updated = 0;
-    $inserted = 0;
-
-    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-        $member_id = $row["member_id"];
-        $member_name = $row["member_name"];
-        $member_notes = $row["member_notes"];
-        $gender = $row["gender"];
-        $member_address = $row["member_address"];
-        $birth_date = $row["birth_date"] == "0000-00-00" ? "1997-11-11" : $row["birth_date"];
-        $postal_code = $row["postal_code"];
-        $member_mail_address = $row["member_mail_address"];
-        $member_email = $row["member_email"];
-        $member_image = $row["member_image"];
-        $mpassword = '$2y$10$CZ0AT5eeoDCa4jQGIo2kaOTy.H8Zg.oSfAXjm2Ed9YvipcREg6IjW';//1234
-        $exp = '2023-05-29';
-        $member_since_date = date("Y-m-d");
-        $member_type_id = 1;
-
-        $prepareSelectSantri = DB::getInstance()->query("SELECT member_id FROM member WHERE member_id = $member_id");
-        echo '<pre>' . $member_id;
-        print_r($row);
-        if ($prepareSelectSantri->rowCount() > 0) {
-            $prepareUpdate->execute(
-                [
-                    $member_name,
-                    $member_notes,
-                    $gender,
-                    $member_address,
-                    $birth_date,
-                    $postal_code,
-                    $member_mail_address,
-                    $member_email,
-                    $member_image,
-                    $member_type_id,
-                    date("Y-m-d"),
-                    $member_id
-                ]
-            );
-            $updated++;
-        } else {
-            $prepareInsert->execute(
-                [
-                    $member_name,
-                    $member_notes,
-                    $gender,
-                    $member_address,
-                    $birth_date,
-                    $postal_code,
-                    $member_mail_address,
-                    $member_email,
-                    $member_image,
-                    $mpassword,
-                    $exp,
-                    $member_type_id,
-                    $member_since_date,
-                    $member_since_date,
-                    $member_since_date
-                ]
-            );
-            $inserted++;
-        }
-        echo '</pre>';
-        copy(
-            "https://res.cloudinary.com/dqq8siyfu/image/upload/w_500,h_500,c_thumb,g_face,q_auto:good/fotosantriaws/$row[santri_id]/$row[foto]",
-            "images/persons/member_$member_id.JPG"
-        );
-    }
-    echo "Success updated = $updated and inserted $inserted <br>";
-    echo "<a href='/'>Back To Main</a>";
-} else {
-    echo "0 results";
-}
+				");
+	if ($result->num_rows > 0) {
+		$updated = 0;
+		$inserted = 0;
+		
+		while ($row = $result->fetch_assoc()) {
+			
+			$member_id = $row["member_id"];
+			$member_name = $row["member_name"];
+			$member_notes = $row["member_notes"];
+			$gender = $row["gender"];
+			$member_address = $row["member_address"];
+			$birth_date = $row["birth_date"] == "0000-00-00" ? "1997-11-11" : $row["birth_date"];
+			$postal_code = $row["postal_code"];
+			$member_mail_address = $row["member_mail_address"];
+			$member_email = $row["member_email"];
+			$member_image = $row["member_image"];
+			$mpassword = '$2y$10$CZ0AT5eeoDCa4jQGIo2kaOTy.H8Zg.oSfAXjm2Ed9YvipcREg6IjW';//1234
+			$exp = '2023-05-29';
+			$member_since_date = date("Y-m-d");
+			$member_type_id = 1;
+			
+			$prepareSelectSantri = $conn_localhost->query("SELECT member_id FROM member WHERE member_id = $member_id");
+			echo '<pre>'.$member_id;
+			var_dump($prepareSelectSantri->num_rows);
+			echo '</pre>';
+			if ($prepareSelectSantri->num_rows > 0) {
+				$prepareUpdate->bind_param("sssssssssisi", $member_name,
+					$member_notes,
+					$gender,
+					$member_address,
+					$birth_date,
+					$postal_code,
+					$member_mail_address,
+					$member_email,
+					$member_image,
+					$member_type_id,
+					$member_since_date,
+					$member_id
+				);
+				$prepareUpdate->execute();
+				$updated++;
+			} else {
+				$prepareInsert->bind_param("isssssssssssisss",
+					$member_id,
+					$member_name,
+					$member_notes,
+					$gender,
+					$member_address,
+					$birth_date,
+					$postal_code,
+					$member_mail_address,
+					$member_email,
+					$member_image,
+					$mpassword,
+					$exp,
+					$member_type_id,
+					$member_since_date,
+					$member_since_date,
+					$member_since_date
+				);
+				$prepareInsert->execute();
+				$inserted++;
+			}
+		}
+		echo "Success updated = $updated and inserted $inserted <br>";
+		echo "<a href='/'>Back To Main</a>";
+	} else {
+		echo "0 results";
+	}
+	$conn_localhost->close();
+	$conn->close();
