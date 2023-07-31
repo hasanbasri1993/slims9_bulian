@@ -110,8 +110,16 @@ if ($result->num_rows > 0) {
         if (!is_null($member_id)){
             $prepareSelectSantri = $conn_localhost->query("SELECT member_id FROM member WHERE member_id = $member_id");
             echo '<pre>' . $member_id;
-            //var_dump($prepareSelectSantri);
+            var_dump($prepareSelectSantri);
             echo '</pre>';
+
+            $photoMember = $member_id."JPG";
+            if ( copy($member_image, $photoMember) ) {
+                echo "Copy success! $member_image";
+            }else{
+                echo "Copy failed. $member_id";
+            }
+
             if ($prepareSelectSantri->num_rows > 0) {
                 $prepareUpdate->bind_param("sssssssssisi", $member_name,
                     $member_notes,
@@ -121,7 +129,7 @@ if ($result->num_rows > 0) {
                     $postal_code,
                     $member_mail_address,
                     $member_email,
-                    $member_image,
+                    $photoMember,
                     $member_type_id,
                     $member_since_date,
                     $member_id
@@ -139,7 +147,7 @@ if ($result->num_rows > 0) {
                     $postal_code,
                     $member_mail_address,
                     $member_email,
-                    $member_image,
+                    $photoMember,
                     $mpassword,
                     $exp,
                     $member_type_id,
