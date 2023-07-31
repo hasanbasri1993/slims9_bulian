@@ -102,7 +102,7 @@ if ($result->num_rows > 0) {
         $member_email = $row["member_email"];
         $member_image = $row["member_image"];
         $mpassword = '$2y$10$CZ0AT5eeoDCa4jQGIo2kaOTy.H8Zg.oSfAXjm2Ed9YvipcREg6IjW';//1234
-        $exp = '2023-05-29';
+        $exp = '2024-05-29';
         $member_since_date = date("Y-m-d");
         $member_type_id = 1;
 
@@ -112,14 +112,7 @@ if ($result->num_rows > 0) {
             echo '<pre>' . $member_id;
             var_dump($prepareSelectSantri);
             echo '</pre>';
-
-            $photoMember = $member_id."JPG";
-            if ( copy($member_image, $photoMember) ) {
-                echo "Copy success! $member_image";
-            }else{
-                echo "Copy failed. $member_id";
-            }
-
+            $photoMember = "member_$member_id.JPG";
             if ($prepareSelectSantri->num_rows > 0) {
                 $prepareUpdate->bind_param("sssssssssisi", $member_name,
                     $member_notes,
