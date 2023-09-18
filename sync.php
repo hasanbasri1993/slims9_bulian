@@ -79,6 +79,7 @@ $prepareUpdate = $conn_localhost->prepare(
 					member_address = ?,
 					birth_date = ?,
 					postal_code = ?,
+					expire_date= ?,
 					member_mail_address = ?,
 					member_email = ?,
 					member_image = ?,
@@ -114,12 +115,13 @@ if ($result->num_rows > 0) {
             echo '</pre>';
             $photoMember = "member_$member_id.JPG";
             if ($prepareSelectSantri->num_rows > 0) {
-                $prepareUpdate->bind_param("sssssssssisi", $member_name,
+                $prepareUpdate->bind_param("ssssssssssisi", $member_name,
                     $member_notes,
                     $gender,
                     $member_address,
                     $birth_date,
                     $postal_code,
+                    $exp,
                     $member_mail_address,
                     $member_email,
                     $photoMember,

@@ -53,10 +53,7 @@ if ($result->num_rows > 0) {
         var_dump($member_id);
         if (!is_null($member_id)){
             $prepareSelectSantri = $conn_localhost->query("SELECT member_id FROM member WHERE member_id = $member_id");
-            echo '<pre>' . $member_id;
-            var_dump($prepareSelectSantri);
-            echo '</pre>';
-
+            echo  $member_id;
             $photoMember = $member_id.".JPG";
             if ( copy("https://res.cloudinary.com/dqq8siyfu/image/upload/h_2048,q_auto:good,e_auto_brightness/".$member_image, "images/persons/member_".$photoMember) ) {
                 echo "Copy success! $member_image";
