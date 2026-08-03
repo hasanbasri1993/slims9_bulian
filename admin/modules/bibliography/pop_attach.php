@@ -66,12 +66,30 @@ function cleanUrl($url)
   }
 
   $port = $Url->getPort() ? ':' . $Url->getPort() : '';
-  return $Url->getScheme() . '://' . 
+  return $Url->getScheme() . '://' .
          $hostname .
-         $port . 
-         $Url->getPath() . 
-         ($Url->getQuery() ? '?' . $Url->getQuery() : '') . 
+         $port .
+         $Url->getPath() .
+         ($Url->getQuery() ? '?' . $Url->getQuery() : '') .
          ($Url->getFragment() ? '#' . $Url->getFragment() : '');
+}
+
+/**
+ * Recognize a Google Drive share link and rewrite it to the flavor that
+ * actually works for the requested placement: Drive refuses to be framed
+ * on the normal /view URL, so 'embed' needs the /preview variant while
+ * link/popup keep the regular viewer URL.
+ */
+function normalizeGoogleDriveUrl($url, $placement)
+{
+  if (preg_match('#drive\.google\.com/file/d/([a-zA-Z0-9_-]+)#i', $url, $m)
+      || preg_match('#drive\.google\.com/(?:open|uc)\?(?:.*&)?id=([a-zA-Z0-9_-]+)#i', $url, $m)) {
+    $fileId = $m[1];
+    return $placement === 'embed'
+      ? 'https://drive.google.com/file/d/' . $fileId . '/preview'
+      : 'https://drive.google.com/file/d/' . $fileId . '/view?usp=sharing';
+  }
+  return $url;
 }
 
 // page title
@@ -92,6 +110,11 @@ if (isset($_GET['fileID']) AND $_GET['fileID']) {
 ob_start();
 /* main content */
 // biblio topic save proccess
+if (isset($_POST['upload']) AND trim(strip_tags($_POST['fileTitle'])) == '') {
+  utility::jsToastr('File Attachment', __('Title is required!'), 'error');
+  die();
+}
+
 if (isset($_POST['upload']) AND trim(strip_tags($_POST['fileTitle'])) != '') {
   $uploaded_file_id = 0;
   $title = trim(strip_tags($_POST['fileTitle']));
@@ -111,6 +134,9 @@ if (isset($_POST['upload']) AND trim(strip_tags($_POST['fileTitle'])) != '') {
     }
   }
   $url = $clean_url;
+  if (!empty($url)) {
+    $url = normalizeGoogleDriveUrl($url, trim($_POST['placement'] ?? 'link'));
+  }
 
   // create new sql op object
   $sql_op = new simbio_dbop($dbs);
@@ -275,7 +301,7 @@ if (isset($file_attach_d['biblio_id']) AND isset($file_attach_d['file_id'])) {
 }
 
 // file title
-$form->addTextField('text', 'fileTitle', __('Title').'*', $file_attach_d['file_title']??'', 'class="form-control"');
+$form->addTextField('text', 'fileTitle', __('Title').'*', $file_attach_d['file_title']??'', 'class="form-control" required');
 // file attachment
 if (isset($file_attach_d['file_name'])) {
   $form->addAnything('Attachment', $file_attach_d['file_dir'].'/'.$file_attach_d['file_name']);
@@ -309,6 +335,10 @@ if (isset($file_attach_d['file_name'])) {
 }
 // file url
 $form->addTextField('textarea', 'fileURL', __('URL'), $file_attach_d['file_url']??'', 'rows="1" class="form-control"');
+$str_input = '<div class="font-italic small">'
+  . __('For files too large to upload here: upload it to Google Drive, set sharing to "Anyone with the link", then paste the share link above. It will be converted automatically to the right format for the placement you pick below.')
+  . '</div>';
+$form->addAnything('', $str_input);
 
 // placement
 $str_input = '<div class="font-italic">*) '.__('Work for embedded link or video attachment').'</div>';
